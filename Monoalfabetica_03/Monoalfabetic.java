@@ -6,7 +6,7 @@ import java.util.List;
 public class Monoalfabetic {
     private static final char[] minus = "aàáâäãbcçdeèéêëfghiìíîïjklmnñopqrstuùúûüvwxyz".toCharArray();
     private static final char[] majus = "AÀÁÂÄÃBCÇDEÈÉÊËFGHIÌÍÎÏJKLMNÑOPQRSTUÙÚÛÜVWXYZ".toCharArray();
-
+    
     public static char[] permutAlfabet() {
         List<Character> canvi = new ArrayList<>();
         for(int i = 0; i < minus.length; i++){
@@ -33,7 +33,7 @@ public class Monoalfabetic {
     }
 
     public static String xifraMonoAlfa(String cadena) {
-    char[] alfabetPermutat = permutAlfabet();
+    char[] alfabetP = permutAlfabet();
     StringBuilder cadenaXifrada = new StringBuilder();
 
     for (int i = 0; i < cadena.length(); i++) {
@@ -41,14 +41,14 @@ public class Monoalfabetic {
         if (Character.isLowerCase(lletra)) {
             int index = findIndex(minus, lletra);
             if (index != -1) {
-                cadenaXifrada.append(alfabetPermutat[index]);
+                cadenaXifrada.append(alfabetP[index]);
             } else {
                 cadenaXifrada.append(lletra);
             }
         } else if (Character.isUpperCase(lletra)) {
             int index = findIndex(majus, lletra);
             if (index != -1) {
-                cadenaXifrada.append(Character.toUpperCase(alfabetPermutat[index]));
+                cadenaXifrada.append(Character.toUpperCase(alfabetP[index]));
             } else {
                 cadenaXifrada.append(lletra);
             }
@@ -59,10 +59,40 @@ public class Monoalfabetic {
     return cadenaXifrada.toString();
     }
 
+    public static String desxifraMonoAlfa(String cadena) {
+    char[] alfabetP = permutAlfabet();
+    StringBuilder cadenaDesxifrada = new StringBuilder();
+
+    for (int i = 0; i < cadena.length(); i++) {
+        char lletra = cadena.charAt(i);
+        if (Character.isLowerCase(lletra)) {
+            int index = findIndex(alfabetP, lletra);
+            if (index != -1) {
+                cadenaDesxifrada.append(minus[index]);
+            } else {
+                cadenaDesxifrada.append(lletra);
+            }
+        } else if (Character.isUpperCase(lletra)) {
+            int index = findIndex(alfabetP, Character.toLowerCase(lletra));
+            if (index != -1) {
+                cadenaDesxifrada.append(majus[index]);
+            } else {
+                cadenaDesxifrada.append(lletra);
+            }
+        } else {
+            cadenaDesxifrada.append(lletra);
+        }
+    }
+    return cadenaDesxifrada.toString();
+}
+
     public static void main(String[] args) {
         String cadena = "Hola, como estas?";
         String cadenaXifrada = xifraMonoAlfa(cadena);
         System.out.println("Texto original: " + cadena);
         System.out.println("Texto xifrat: " + cadenaXifrada);
+
+        String cadenaDesxifrada = desxifraMonoAlfa(cadenaXifrada);
+    System.out.println("Text desxifrat: " + cadenaDesxifrada);
     }
 }
