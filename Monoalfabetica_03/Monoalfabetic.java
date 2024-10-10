@@ -6,7 +6,8 @@ import java.util.List;
 public class Monoalfabetic {
     private static final char[] minus = "aàáâäãbcçdeèéêëfghiìíîïjklmnñopqrstuùúûüvwxyz".toCharArray();
     private static final char[] majus = "AÀÁÂÄÃBCÇDEÈÉÊËFGHIÌÍÎÏJKLMNÑOPQRSTUÙÚÛÜVWXYZ".toCharArray();
-    
+    private static char[] alfabetP;
+
     public static char[] permutAlfabet() {
         List<Character> canvi = new ArrayList<>();
         for(int i = 0; i < minus.length; i++){
@@ -16,7 +17,7 @@ public class Monoalfabetic {
         Collections.shuffle(canvi);
         System.out.println("Alfabet permutat: " + canvi);
 
-        char[] alfabetP = new char[canvi.size()];
+        alfabetP = new char[canvi.size()];
         for(int i = 0; i < canvi.size(); i++){
             alfabetP[i] = canvi.get(i);
         }
@@ -33,7 +34,9 @@ public class Monoalfabetic {
     }
 
     public static String xifraMonoAlfa(String cadena) {
-    char[] alfabetP = permutAlfabet();
+        if (alfabetP == null) {
+            permutAlfabet();
+        }
     StringBuilder cadenaXifrada = new StringBuilder();
 
     for (int i = 0; i < cadena.length(); i++) {
@@ -60,7 +63,10 @@ public class Monoalfabetic {
     }
 
     public static String desxifraMonoAlfa(String cadena) {
-    char[] alfabetP = permutAlfabet();
+    if (alfabetP == null) {
+            permutAlfabet();
+        }
+
     StringBuilder cadenaDesxifrada = new StringBuilder();
 
     for (int i = 0; i < cadena.length(); i++) {
