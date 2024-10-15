@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Random;
 
 public class Polialfabetic {
-    private static final char[] minus = "aàáâäãbcçdeèéêëfghiìíîïjklmnñopqrstuùúûüvwxyz".toCharArray();
-    private static final char[] majus = "AÀÁÂÄÃBCÇDEÈÉÊËFGHIÌÍÎÏJKLMNÑOPQRSTUÙÚÛÜVWXYZ".toCharArray();
+    private static final char[] minus = "aàáâãäåbcçdèéêëfgìíîïjklmnñòóôõöpqrstuùúûüvwxyýz".toCharArray();
+    private static final char[] majus = "AÀÁÂÃÄÅBCÇDÈÉÊËFGÌÍÎÏJKLMNÑÒÓÔÕÖPQRSTÙÚÛÜVWXYÝZ".toCharArray();
     private static char[] alfabetP;
     private static Random random = new Random();
 
@@ -18,7 +18,7 @@ public class Polialfabetic {
         random.setSeed(seed);
     }
 
-    //mètode activitat anterios per permutar l'alfabet
+    //mètode activitat anterior per permutar l'alfabet
     public static char[] permutaAlfabet(){
         List<Character> canvi = new ArrayList<>();
         for(int i = 0; i < minus.length; i++){
@@ -39,8 +39,7 @@ public class Polialfabetic {
         for (char lletra : msg.toCharArray()) {
             if (Character.isLowerCase(lletra)) {
                 alfabetP = permutaAlfabet();  // Permuta per a cada lletra
-                int index = findIndex(minus, lletra); //cerca l'index
-                resultat.append(alfabetP[index]);
+                int index = findIndex(minus, lletra);
                 if (index != -1) {
                     resultat.append(alfabetP[index]);
                 } else {
@@ -49,7 +48,6 @@ public class Polialfabetic {
             } else if (Character.isUpperCase(lletra)) {
                 alfabetP = permutaAlfabet();  // Permuta per a cada lletra
                 int index = findIndex(majus, lletra);
-                resultat.append(alfabetP[index]);
                 if (index != -1) {
                     resultat.append(alfabetP[index]);
                 } else {
@@ -62,9 +60,9 @@ public class Polialfabetic {
         return resultat.toString();
     }
 
-    private static int findIndex(char[] alfabet, char lletra) {
-        for (int i = 0; i < minus       .length; i++) {
-            if (alfabet[i] == lletra) {
+    private static int findIndex(char[] alP, char lletra) {
+        for (int i = 0; i < alP.length; i++) {
+            if (alP[i] == lletra) {
                 return i;
             }
         }
@@ -78,7 +76,6 @@ public class Polialfabetic {
             if (Character.isLowerCase(lletra)) {
                 alfabetP = permutaAlfabet();  // Permuta per a cada lletra
                 int index = findIndex(alfabetP, lletra);
-                resultat.append(minus[index]);
                 if (index != -1) {
                     resultat.append(alfabetP[index]);
                 } else {
@@ -87,7 +84,11 @@ public class Polialfabetic {
             } else if (Character.isUpperCase(lletra)) {
                 alfabetP = permutaAlfabet();  // Permuta per a cada lletra
                 int index = findIndex(alfabetP, lletra);
-                resultat.append(majus[index]);
+                if (index != -1) {
+                    resultat.append(alfabetP[index]);
+                } else {
+                    resultat.append(lletra);  // Manté el caràcter si no es troba a l'alfabet
+                }
                 
             } else {
                 resultat.append(lletra); // Manté els caràcters no alfabètics
