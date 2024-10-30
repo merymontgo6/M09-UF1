@@ -99,17 +99,6 @@ public String forcaBrutaRotX(String text) {
             }
         }
     }
-
-    @Override
-    public String encripta(String missatge) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public String desxifra(String missatgeXifrat) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     @Override
     public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
         throw new UnsupportedOperationException("Not supported yet.");
