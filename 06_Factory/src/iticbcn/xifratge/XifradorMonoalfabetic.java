@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class XifradorMonoalfabetic {
+public class XifradorMonoalfabetic implements Xifrador {
     private final char[] minus = "aàáâãäåbcçdèéêëfgìíîïjklmnñòóôõöpqrstuùúûüvwxyýz".toCharArray();
     private final char[] majus = "AÀÁÂÃÄÅBCÇDÈÉÊËFGÌÍÎÏJKLMNÑÒÓÔÕÖPQRSTÙÚÛÜVWXYÝZ".toCharArray();
     private char[] alfabetP;
@@ -101,5 +101,25 @@ public class XifradorMonoalfabetic {
 
         String cadenaDesxifrada = desxifraMonoAlfa(cadenaXifrada);
     System.out.println("Text desxifrat: " + cadenaDesxifrada);
+    }
+
+    @Override
+    public String encripta(String missatge) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String desxifra(String missatgeXifrat) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

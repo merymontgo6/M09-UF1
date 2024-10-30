@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class XifradorPolialfabetic {
+public class XifradorPolialfabetic implements Xifrador{
     private final char[] minus = "aàáâãäåbcçdèéêëfgìíîïjklmnñòóôõöpqrstuùúûüvwxyýz".toCharArray();
     private final char[] majus = "AÀÁÂÃÄÅBCÇDÈÉÊËFGÌÍÎÏJKLMNÑÒÓÔÕÖPQRSTÙÚÛÜVWXYÝZ".toCharArray();
     private char[] alfabetP;
@@ -118,5 +118,25 @@ public class XifradorPolialfabetic {
         String msg = desxifraPoliAlfa (msgsXifrats [i]);
         System.out.printf("%-34s -> %s%n", msgsXifrats [i], msg);
         }
+    }
+
+    @Override
+    public String encripta(String missatge) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String desxifra(String missatgeXifrat) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

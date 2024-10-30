@@ -1,9 +1,9 @@
 package iticbcn.xifratge;
 import java.util.Scanner;
 
-public class XifradorRotX {
+public class XifradorRotX implements Xifrador{
     private final char[] minus = "aàáâäãbcçdeèéêëfghiìíîïjklmnñopqrstuùúûüvwxyz".toCharArray();
-    private final char[] majus = "AÀÁÂÄÃBCÇDEÈÉÊËFGHIÌÍÎÏJKLMNÑOPQRSTUÙÚÛÜVWXYZ".toCharArray();
+    private final char[] majus = "AÀÁÂÄÃBCÇDEÈÉÊËFGHIÌÍÎÏJKLMNÑOP QRSTUÙÚÛÜVWXYZ".toCharArray();
 
 
     public String xifraRotX( String text, Integer num) {
@@ -98,5 +98,25 @@ public String forcaBrutaRotX(String text) {
                 System.out.println("'xifra' o 'desxifra'");
             }
         }
+    }
+
+    @Override
+    public String encripta(String missatge) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String desxifra(String missatgeXifrat) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

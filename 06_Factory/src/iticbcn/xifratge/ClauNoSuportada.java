@@ -1,5 +1,4 @@
 package iticbcn.xifratge;
-
 public class ClauNoSuportada extends Exception {
 
     // Constructor que accepta un missatge personalitzat

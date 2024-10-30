@@ -7,11 +7,11 @@ import javax.crypto.spec.SecretKeySpec;
 
 //has to belong to package iticbcn.xifratge;
 
-public class XifradorAES{
+public class XifradorAES implements Xifrador {
 
-    public final String ALGORISME_XIFRAT = "AES";
-    public final String ALGORISME_HASH = "SHA-256";
-    public final String FORMAT_AES = "AES/CBC/PKCS5Padding";
+    public String ALGORISME_XIFRAT = "AES";
+    public String ALGORISME_HASH = "SHA-256";
+    public String FORMAT_AES = "AES/CBC/PKCS5Padding";
 
     private final int MIDA_IV = 16;
     private final byte[] iv = new byte[MIDA_IV];
@@ -84,5 +84,25 @@ public class XifradorAES{
             System.out.println("Enc: " + new String(bXifrats));
             System.out.println("DEC: " + desxifrat);
         }
+    }
+
+    @Override
+    public String encripta(String missatge) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String desxifra(String missatgeXifrat) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
