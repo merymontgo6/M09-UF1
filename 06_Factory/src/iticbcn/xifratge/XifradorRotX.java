@@ -1,111 +1,94 @@
 package iticbcn.xifratge;
-import java.util.Scanner;
+
+import java.util.Random;
 
 public class XifradorRotX implements Xifrador{
-    private final char[] minus = "aàáâäãbcçdeèéêëfghiìíîïjklmnñopqrstuùúûüvwxyz".toCharArray();
-    private final char[] majus = "AÀÁÂÄÃBCÇDEÈÉÊËFGHIÌÍÎÏJKLMNÑOP QRSTUÙÚÛÜVWXYZ".toCharArray();
+    public static final char[] minus = "aàáâäãbcçdeèéêëfghiìíîïjklmnñopqrstuùúûüvwxyz".toCharArray();
+    public static final char[] majus = "AÀÁÂÄÃBCÇDEÈÉÊËFGHIÌÍÎÏJKLMNÑOP QRSTUÙÚÛÜVWXYZ".toCharArray();
+    public static final Random random = new Random();
 
-
-    public String xifraRotX( String text, Integer num) {
-        StringBuilder str = new StringBuilder();
-
-        for (int i = 0; i < text.length(); i++) {
-            char textXifrat = text.charAt(i);
-
-            if (Character.isLowerCase(textXifrat)) {
-                int pos = (textXifrat - 'a' + num) % minus.length;
-                str.append(minus[pos]);}
-
-            else if (Character.isUpperCase(textXifrat)) {
-                int pos = (textXifrat - 'A' + num) % majus.length;
-                str.append(majus[pos]);
-            } else {
-                str.append(textXifrat);
-                }
-        } return str.toString();
+    // Inicialitza la llavor aleatòria amb la contrasenya
+    public void initRandom(String clauSecreta) {
+        long seed = 0;
+        for (byte b : clauSecreta.getBytes()) {
+            seed += b;
+        }
+        random.setSeed(seed);
     }
 
-    public String desxifraRotX (String text, Integer num) {
-        StringBuilder str = new StringBuilder();
-
-        for(int i = 0; i < text.length();i++){
-            char textDesxifrat = text.charAt(i);
-            if(Character.isLowerCase(textDesxifrat)){
-                int pos = (textDesxifrat - 'a' - num)%minus.length;
-                str.append((minus[pos]));
-            } 
-            else if (Character.isUpperCase(textDesxifrat)){
-                int pos = (textDesxifrat - 'A' - num)%majus.length;
-                str.append(majus[pos]);
-            }
-            else {
-                str.append(textDesxifrat);
-            }
-        } return str.toString();
-    }
-
-// Ha de provar tots els desplaçaments possibles i mostrar el missatge
-// resultant de desxifrar amb desplaçaments de 1,2,3,... fins la longitud de l’abecedari.
-public String forcaBrutaRotX(String text) {
-    StringBuilder str = new StringBuilder();
-
-    for (int i = 1; i <= minus.length; i++) { // 0 no pq seria lo mismo xd 
-        StringBuilder str2 = new StringBuilder();
-        
-        for (int j = 0; j < text.length(); j++) {
-            char c = text.charAt(j);
-
-            if (Character.isLowerCase(c)) {
-                for (int k = 0; k < minus.length; k++) {
-                    if (minus[k] == c) {
-                        str2.append(minus[(k + i) % minus.length]);
-                        break;
-                    }
-                }
-            } else if (Character.isUpperCase(c)) {
-                for (int h = 0; h < majus.length; h++) {
-                    if (majus[h] == c) {
-                        str2.append(majus[(h + i) % majus.length]);
-                        break;
-                    }
-                }
-            } else {
-                str2.append(c);
+    public static int posicioEnArray(char[] llista, char c) {
+        for (int i = 0; i < llista.length; i++) {
+            if (llista[i] == c) {
+                return i;
             }
         }
-        str.append("Desplaçament " + i + ": " + str2.toString() + "\n");
-    } return str.toString();
-}
-
-    @SuppressWarnings("ConvertToStringSwitch")
-    public void main(String[] args) throws Exception {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.println("Vols xifrar o desxifrar el text? (xifra/desxifra):");
-            String opcio = scanner.nextLine();
-            System.out.println("Escriu el text a desxifrar:");
-            String text = scanner.nextLine();
-            System.out.println("Quants desplaçaments vols fer?");
-            int num = scanner.nextInt();
-            scanner.nextLine();
-
-            if (opcio.equals("xifra")) {
-                String textXifrat = xifraRotX(text, num);
-                System.out.println("Text xifrat:" + textXifrat);
-            } else if(opcio.equals("desxifra")) {
-                String textDesxifrat = desxifraRotX(text, num);
-                System.out.println("Text desxifrat: "+ textDesxifrat);
-            } else {
-                System.out.println("'xifra' o 'desxifra'");
-            }
-        }
+        return -1;
     }
-    @Override
-    public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
-        throw new UnsupportedOperationException("Not supported yet.");
+
+    public static char xifraCaracterRotX(char[] llista, int pos, int rot) {
+        int posChar = (pos + rot) % llista.length;
+        return llista[posChar];
+    }
+
+    public static char desXifraCaracterRotX(char[] llista, int pos, int rot) {
+        int posChar = ((pos - rot) < 0) ? (pos - rot) + llista.length : (pos - rot);
+        return llista[posChar];
+    }
+
+    public static String rotaX(String msg, int rot, boolean dreta) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < msg.length(); i++) {
+            char cOrig = msg.charAt(i);
+            int pos = posicioEnArray(majus, cOrig);
+            char cRotat;
+            if (pos != -1) {
+                cRotat = dreta ? xifraCaracterRotX(majus, pos, rot) : desXifraCaracterRotX(majus, pos, rot);
+            } else {
+                pos = posicioEnArray(minus, cOrig);
+                if (pos != -1) {
+                    cRotat = dreta ? xifraCaracterRotX(minus, pos, rot) : desXifraCaracterRotX(minus, pos, rot);
+                } else {
+                    cRotat = cOrig; // character not found in both arrays
+                }
+            }
+            sb.append(cRotat);
+        }
+        return sb.toString();
     }
 
     @Override
-    public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public TextXifrat xifra(String msg, String rot) throws ClauNoSuportada {
+        int rotation;
+        try {
+            rotation = Integer.parseInt(rot);
+            if (rotation < 0 || rotation > 40) {
+                throw new ClauNoSuportada("Clau de RotX ha de ser un sencer de 0 a 40");
+            }
+        } catch (NumberFormatException e) {
+            throw new ClauNoSuportada("Clau de RotX ha de ser un sencer de 0 a 40");
+        }
+
+        String encryptedMsg = rotaX(msg, rotation, true);
+        return new TextXifrat(encryptedMsg.getBytes());
+    }
+    
+    @Override
+    public String desxifra(TextXifrat txt, String rot) throws ClauNoSuportada {
+        int rotation;
+        try {
+            rotation = Integer.parseInt(rot);
+            if (rotation < 0 || rotation > 40) {
+                throw new ClauNoSuportada("Clau de RotX ha de ser un sencer de 0 a 40");
+            }
+        } catch (NumberFormatException e) {
+            throw new ClauNoSuportada("Clau de RotX ha de ser un sencer de 0 a 40");
+        }
+
+        String decryptedMsg = desxifraRorX(txt.toString(), rotation);
+        return decryptedMsg;
+    }
+
+    public static String desxifraRorX(String msg, int rot) {
+        return rotaX(msg, rot, false);
     }
 }

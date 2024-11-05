@@ -4,7 +4,7 @@ public class AlgorismeMonoalfabetic extends AlgorismeFactory{
 
     @Override
     public Xifrador creaXifrador() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new XifradorMonoalfabetic();
     }
     
 }

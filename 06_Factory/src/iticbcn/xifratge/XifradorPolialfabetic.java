@@ -33,8 +33,14 @@ public class XifradorPolialfabetic implements Xifrador{
         }
         return alfabetP;
     }
+    
+    @Override
+    public TextXifrat xifra ( String msg, String clau ) throws ClauNoSuportada{
+        if (clau == null){
+            throw new ClauNoSuportada("Clau no suportada");
+        }
 
-    public String xifraPoliAlfa( String msg ){
+        initRandom(clau);
         StringBuilder resultat = new StringBuilder();
         
         for (char lletra : msg.toCharArray()) {
@@ -58,7 +64,7 @@ public class XifradorPolialfabetic implements Xifrador{
                 resultat.append(lletra); // Manté els caràcters no alfabètics
             }
         }
-        return resultat.toString();
+        return new TextXifrat(resultat.toString().getBytes());
     }
 
     private int findIndex(char[] alP, char lletra) {
@@ -70,10 +76,18 @@ public class XifradorPolialfabetic implements Xifrador{
         return -1; // Si no es troba, retorna -1 (no s'hauria de donar)
     }
 
-    public String desxifraPoliAlfa( String msgXifrat ){
+    @Override
+    public String desxifra( TextXifrat msgXifrat, String clau ) throws ClauNoSuportada{
+        if (clau == null){
+            throw new ClauNoSuportada("Clau no suportada");
+        }
+
+        initRandom(clau);
         StringBuilder resultat = new StringBuilder();
+        byte[] bytes = msgXifrat.getBytes();
         
-        for (char lletra : msgXifrat.toCharArray()) {
+        for (byte b : bytes) {
+            char lletra = (char) b;
             if (Character.isLowerCase(lletra)) {
                 alfabetP = permutaAlfabet();  // Permuta per a cada lletra
                 int index = findIndex(alfabetP, lletra);
@@ -96,37 +110,5 @@ public class XifradorPolialfabetic implements Xifrador{
             }
         }
         return resultat.toString();
-    }
-
-    // Funció auxiliar per trobar la posició d'una lletra a l'alfabet
-    
-    public void main(String[] args) {
-        String msgs[] = {"Test 01 àrbritre, coixí, Perímetre",
-                    "Test 02 Taüll, DÍA, año",
-                    "Test 03 Peça, Òrrius, Bòvila"};
-        String msgsXifrats [] = new String[msgs.length];
-        String clauSecreta = "ClauSecreta"; 
-        System.out.println("Xifratge:\n--------");
-        for (int i = 0; i < msgs.length; i++) {
-        initRandom(clauSecreta );
-        msgsXifrats [i] = xifraPoliAlfa (msgs[i]);
-        System.out.printf("%-34s -> %s%n", msgs[i], msgsXifrats [i]);
-        }
-        System.out.println("Desxifratge: \n-----------" );
-        for (int i = 0; i < msgs.length; i++) {
-        initRandom(clauSecreta );
-        String msg = desxifraPoliAlfa (msgsXifrats [i]);
-        System.out.printf("%-34s -> %s%n", msgsXifrats [i], msg);
-        }
-    }
-    
-    @Override
-    public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

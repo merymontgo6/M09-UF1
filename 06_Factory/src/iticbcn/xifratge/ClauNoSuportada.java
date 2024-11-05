@@ -4,6 +4,7 @@ public class ClauNoSuportada extends Exception {
     // Constructor que accepta un missatge personalitzat
     public ClauNoSuportada(String missatge) {
         super(missatge);
+
     }
 
     // Constructor per defecte

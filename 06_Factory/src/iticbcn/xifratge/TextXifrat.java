@@ -1,26 +1,22 @@
 package iticbcn.xifratge;
+import java.util.Arrays;
 
 public class TextXifrat {
-    private byte [] bytes;
+    private final byte[] textXifrat;
 
-    // Constructor que accepta un array de bytes
-    public TextXifrat(byte[] bytes) {
-        this.bytes = bytes;
+    // Constructor que inicialitza l'array de bytes
+    public TextXifrat(byte[] textXifrat) {
+        this.textXifrat = textXifrat;
     }
 
-    // Mètode toString que retorna una representació en String dels bytes
+    // Mètode per obtenir l'array de bytes
+    public byte[] getBytes() {
+        return textXifrat;
+    }
+
+    // Mètode toString sobreescrit per retornar una representació del text xifrat
     @Override
     public String toString() {
-        // Convertim l'array de bytes a una cadena hexadecimal
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02x", b)); // Formateja cada byte com a hexadecimal
-        }
-        return sb.toString();
-    }
-
-    // Mètode que retorna l'array de bytes
-    public byte[] getBytes() {
-        return bytes;
+        return Arrays.toString(textXifrat);
     }
 }

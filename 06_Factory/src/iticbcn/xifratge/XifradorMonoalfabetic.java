@@ -1,22 +1,30 @@
 package iticbcn.xifratge;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class XifradorMonoalfabetic implements Xifrador {
     private final char[] minus = "aàáâãäåbcçdèéêëfgìíîïjklmnñòóôõöpqrstuùúûüvwxyýz".toCharArray();
     private final char[] majus = "AÀÁÂÃÄÅBCÇDÈÉÊËFGÌÍÎÏJKLMNÑÒÓÔÕÖPQRSTÙÚÛÜVWXYÝZ".toCharArray();
     private char[] alfabetP;
+    private final Random random = new Random();
+
+    public void initRandom(String clauSecreta) {
+        long seed = 0;
+        for (byte b : clauSecreta.getBytes()) {
+            seed += b;
+        }
+        random.setSeed(seed);
+    }
 
     public char[] permutAlfabet() {
         List<Character> canvi = new ArrayList<>();
         for(int i = 0; i < minus.length; i++){
             canvi.add(minus[i]);
         }
-        System.out.println("Alfabet original: " + Arrays.toString(minus));
         Collections.shuffle(canvi);
-        System.out.println("Alfabet permutat: " + canvi);
 
         alfabetP = new char[canvi.size()];
         for(int i = 0; i < canvi.size(); i++){
@@ -34,82 +42,69 @@ public class XifradorMonoalfabetic implements Xifrador {
         return -1;
     }
 
-    public String xifraMonoAlfa(String cadena) {
+    @Override
+    public TextXifrat xifra(String cadena, String clau) throws ClauNoSuportada {
+        if (clau == null){
+            throw new ClauNoSuportada("Clau no suportada");
+        }
         if (alfabetP == null) {
             permutAlfabet();
         }
-    StringBuilder cadenaXifrada = new StringBuilder();
+        StringBuilder cadenaXifrada = new StringBuilder();
 
-    for (int i = 0; i < cadena.length(); i++) {
-        char lletra = cadena.charAt(i);
-        if (Character.isLowerCase(lletra)) {
-            int index = findIndex(minus, lletra);
-            if (index != -1) {
-                cadenaXifrada.append(alfabetP[index]);
+        for (int i = 0; i < cadena.length(); i++) {
+            char lletra = cadena.charAt(i);
+            if (Character.isLowerCase(lletra)) {
+                int index = findIndex(minus, lletra);
+                if (index != -1) {
+                    cadenaXifrada.append(alfabetP[index]);
+                } else {
+                    cadenaXifrada.append(lletra);
+                }
+            } else if (Character.isUpperCase(lletra)) {
+                int index = findIndex(majus, lletra);
+                if (index != -1) {
+                    cadenaXifrada.append(Character.toUpperCase(alfabetP[index]));
+                } else {
+                    cadenaXifrada.append(lletra);
+                }
             } else {
                 cadenaXifrada.append(lletra);
             }
-        } else if (Character.isUpperCase(lletra)) {
-            int index = findIndex(majus, lletra);
-            if (index != -1) {
-                cadenaXifrada.append(Character.toUpperCase(alfabetP[index]));
-            } else {
-                cadenaXifrada.append(lletra);
-            }
-        } else {
-            cadenaXifrada.append(lletra);
         }
-    }
-    return cadenaXifrada.toString();
-    }
-
-    public String desxifraMonoAlfa(String cadena) {
-    if (alfabetP == null) {
-            permutAlfabet();
+        return new TextXifrat(cadenaXifrada.toString().getBytes());
         }
 
-    StringBuilder cadenaDesxifrada = new StringBuilder();
+    @Override
+    public String desxifra(TextXifrat msgXifrat, String clau) throws ClauNoSuportada {
+        if (clau == null){
+            throw new ClauNoSuportada("Clau no suportada");
+        }
 
-    for (int i = 0; i < cadena.length(); i++) {
-        char lletra = cadena.charAt(i);
-        if (Character.isLowerCase(lletra)) {
-            int index = findIndex(alfabetP, lletra);
-            if (index != -1) {
-                cadenaDesxifrada.append(minus[index]);
+        initRandom(clau);
+        byte[] bytes = msgXifrat.getBytes();
+        StringBuilder cadenaDesxifrada = new StringBuilder();
+
+        for (byte b : bytes) {
+            char lletra = (char) b;
+            if (Character.isLowerCase(lletra)) {
+                int index = findIndex(alfabetP, lletra);
+                if (index != -1) {
+                    cadenaDesxifrada.append(minus[index]);
+                } else {
+                    cadenaDesxifrada.append(lletra);
+                }
+            } else if (Character.isUpperCase(lletra)) {
+                int index = findIndex(alfabetP, Character.toLowerCase(lletra));
+                if (index != -1) {
+                    cadenaDesxifrada.append(majus[index]);
+                } else {
+                    cadenaDesxifrada.append(lletra);
+                }
             } else {
                 cadenaDesxifrada.append(lletra);
             }
-        } else if (Character.isUpperCase(lletra)) {
-            int index = findIndex(alfabetP, Character.toLowerCase(lletra));
-            if (index != -1) {
-                cadenaDesxifrada.append(majus[index]);
-            } else {
-                cadenaDesxifrada.append(lletra);
-            }
-        } else {
-            cadenaDesxifrada.append(lletra);
         }
-    }
-    return cadenaDesxifrada.toString();
-}
-
-    public void main(String[] args) {
-        String cadena = "Hola, como estas?";
-        String cadenaXifrada = xifraMonoAlfa(cadena);
-        System.out.println("Texto original: " + cadena);
-        System.out.println("Texto xifrat: " + cadenaXifrada);
-
-        String cadenaDesxifrada = desxifraMonoAlfa(cadenaXifrada);
-    System.out.println("Text desxifrat: " + cadenaDesxifrada);
-    }
-
-    @Override
-    public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return cadenaDesxifrada.toString();
     }
 }
