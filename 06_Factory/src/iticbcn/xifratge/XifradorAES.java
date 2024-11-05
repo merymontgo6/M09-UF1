@@ -54,10 +54,6 @@ public class XifradorAES implements Xifrador {
             System.arraycopy(iv, 0, encryptedWithIv, 0, MIDA_IV);
             System.arraycopy(encrypted, 0, encryptedWithIv, MIDA_IV, encrypted.length);
 
-            StringBuilder sb = new StringBuilder();
-            for (byte b : encryptedWithIv) {
-                sb.append((char)b);
-            }
             return new TextXifrat(encryptedWithIv);
             
         } catch (Exception e) {

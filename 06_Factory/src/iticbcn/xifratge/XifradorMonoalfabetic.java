@@ -3,36 +3,30 @@ package iticbcn.xifratge;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class XifradorMonoalfabetic implements Xifrador {
     private final char[] minus = "aàáâãäåbcçdèéêëfgìíîïjklmnñòóôõöpqrstuùúûüvwxyýz".toCharArray();
     private final char[] majus = "AÀÁÂÃÄÅBCÇDÈÉÊËFGÌÍÎÏJKLMNÑÒÓÔÕÖPQRSTÙÚÛÜVWXYÝZ".toCharArray();
     private char[] alfabetP;
-    private final Random random = new Random();
-
-    public void initRandom(String clauSecreta) {
-        long seed = 0;
-        for (byte b : clauSecreta.getBytes()) {
-            seed += b;
-        }
-        random.setSeed(seed);
-    }
 
     public char[] permutAlfabet() {
-        List<Character> canvi = new ArrayList<>();
-        for(int i = 0; i < minus.length; i++){
-            canvi.add(minus[i]);
-        }
-        Collections.shuffle(canvi);
-
-        alfabetP = new char[canvi.size()];
-        for(int i = 0; i < canvi.size(); i++){
-            alfabetP[i] = canvi.get(i);
+        if (alfabetP == null) {  // Generate only if null
+            List<Character> canvi = new ArrayList<>();
+            for (char c : minus) {
+                canvi.add(c);
+            }
+            Collections.shuffle(canvi);
+            
+            alfabetP = new char[canvi.size()];
+            for (int i = 0; i < canvi.size(); i++) {
+                alfabetP[i] = canvi.get(i);
+            }
+            
+            // Print alfabetP for debugging
+            System.out.println("Generated alfabetP: " + new String(alfabetP));
         }
         return alfabetP;
     }
-
     private int findIndex(char[] canvi, char lletra) {
         for (int i = 0; i < canvi.length; i++) {
             if (canvi[i] == lletra) {
@@ -44,12 +38,10 @@ public class XifradorMonoalfabetic implements Xifrador {
 
     @Override
     public TextXifrat xifra(String cadena, String clau) throws ClauNoSuportada {
-        if (clau == null){
-            throw new ClauNoSuportada("Clau no suportada");
+        if (clau != null){
+            throw new ClauNoSuportada("Xifratxe monoalfabètic no suporta clau != null");
         }
-        if (alfabetP == null) {
-            permutAlfabet();
-        }
+        permutAlfabet();
         StringBuilder cadenaXifrada = new StringBuilder();
 
         for (int i = 0; i < cadena.length(); i++) {
@@ -77,11 +69,9 @@ public class XifradorMonoalfabetic implements Xifrador {
 
     @Override
     public String desxifra(TextXifrat msgXifrat, String clau) throws ClauNoSuportada {
-        if (clau == null){
-            throw new ClauNoSuportada("Clau no suportada");
+        if (clau != null){
+            throw new ClauNoSuportada("Xifratxe monoalfabètic no suporta clau != null");
         }
-
-        initRandom(clau);
         byte[] bytes = msgXifrat.getBytes();
         StringBuilder cadenaDesxifrada = new StringBuilder();
 
