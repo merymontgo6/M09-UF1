@@ -1,5 +1,6 @@
 import java.security.*;
 import java.util.Arrays;
+import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -67,21 +68,25 @@ public class AES{
         
         for (int i = 0; i < msgs.length; i++) {
             String msg = msgs[i];
-
+    
             byte[] bXifrats = null;
             String desxifrat = "";
             try {
                 bXifrats = xifraAES(msg, CLAU);
-                desxifrat = desxifraAES (bXifrats, CLAU);
+                desxifrat = desxifraAES(bXifrats, CLAU);
             } catch (Exception e) {
-            System.err.println("Error de xifrat: "
-            + e.getLocalizedMessage ());
+                System.err.println("Error de xifrat: " + e.getLocalizedMessage());
             }
             
-        System.out.println("--------------------" );
-        System.out.println("Msg: " + msg);
-        System.out.println("Enc: " + new String(bXifrats));
-        System.out.println("DEC: " + desxifrat);
+            System.out.println("--------------------" );
+            System.out.println("Msg: " + msg);
+            
+            // Convert the encrypted byte array to Base64 for readable output
+            String encryptedBase64 = Base64.getEncoder().encodeToString(bXifrats);
+            System.out.println("Enc: " + encryptedBase64);
+            
+            System.out.println("DEC: " + desxifrat);
         }
     }
+    
 }
