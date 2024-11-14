@@ -1,7 +1,9 @@
 package iticbcn.xifratge;
 
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Random;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -54,7 +56,8 @@ public class XifradorAES implements Xifrador {
             System.arraycopy(iv, 0, encryptedWithIv, 0, MIDA_IV);
             System.arraycopy(encrypted, 0, encryptedWithIv, MIDA_IV, encrypted.length);
 
-            return new TextXifrat(encryptedWithIv);
+            String encryptedBase64 = Base64.getEncoder().encodeToString(encryptedWithIv);
+            return new TextXifrat(encryptedBase64.getBytes(StandardCharsets.UTF_8));
             
         } catch (Exception e) {
             System.err.println("Error en el xifratge: " + e.getMessage());
@@ -69,7 +72,7 @@ public class XifradorAES implements Xifrador {
             throw new ClauNoSuportada("Clau no suportada");
         }
         initRandom(clau);
-        byte[] bXifrats = txt.getBytes();
+        byte[] bXifrats =  Base64.getDecoder().decode(txt.getBytes());
         IvParameterSpec IvPa = new IvParameterSpec(Arrays.copyOfRange(bXifrats, 0, MIDA_IV));
 
         // extrae mensaje xifrat
@@ -87,7 +90,7 @@ public class XifradorAES implements Xifrador {
             byte[] decryptedMsg = cipher.doFinal(encryptedMsg);
 
             // convierte decrypted byte array a string
-            return new String(decryptedMsg, "UTF-8");
+            return new String(decryptedMsg, StandardCharsets.UTF_8);
         } catch (Exception e) {
             System.err.println("Error en el desxifratge: " + e.getMessage());
             System.exit(1);

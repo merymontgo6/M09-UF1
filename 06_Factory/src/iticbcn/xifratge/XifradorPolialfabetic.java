@@ -35,34 +35,38 @@ public class XifradorPolialfabetic implements Xifrador{
     }
     
     @Override
-    public TextXifrat xifra ( String msg, String clau ) throws ClauNoSuportada{
-        if (clau == null){
-            throw new ClauNoSuportada("Clau no suportada");
+    public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
+        if (clau == null || !clau.matches("[0-9]+")) {
+            throw new ClauNoSuportada("La clau per xifrat Polialfabètic ha de ser un String convertible a long");
         }
 
         initRandom(clau);
         StringBuilder resultat = new StringBuilder();
-        
-        for (char lletra : msg.toCharArray()) {
-            if (Character.isLowerCase(lletra)) {
-                alfabetP = permutaAlfabet();  // Permuta per a cada lletra
-                int index = findIndex(minus, lletra);
-                if (index != -1) {
-                    resultat.append(alfabetP[index]);
+        try {
+            String cadena = new String(msg.getBytes(), "UTF-8");
+            for (char lletra : msg.toCharArray()) {
+                if (Character.isLowerCase(lletra)) {
+                    alfabetP = permutaAlfabet();  // Permuta per a cada lletra
+                    int index = findIndex(minus, lletra);
+                    if (index != -1) {
+                        resultat.append(alfabetP[index]);
+                    } else {
+                        resultat.append(lletra);  // Manté el caràcter si no es troba a l'alfabet
+                    }
+                } else if (Character.isUpperCase(lletra)) {
+                    alfabetP = permutaAlfabet();  // Permuta per a cada lletra
+                    int index = findIndex(majus, lletra);
+                    if (index != -1) {
+                        resultat.append(alfabetP[index]);
+                    } else {
+                        resultat.append(lletra);  // Manté el caràcter si no es troba a l'alfabet
+                    }
                 } else {
-                    resultat.append(lletra);  // Manté el caràcter si no es troba a l'alfabet
+                    resultat.append(lletra); // Manté els caràcters no alfabètics
                 }
-            } else if (Character.isUpperCase(lletra)) {
-                alfabetP = permutaAlfabet();  // Permuta per a cada lletra
-                int index = findIndex(majus, lletra);
-                if (index != -1) {
-                    resultat.append(alfabetP[index]);
-                } else {
-                    resultat.append(lletra);  // Manté el caràcter si no es troba a l'alfabet
-                }
-            } else {
-                resultat.append(lletra); // Manté els caràcters no alfabètics
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return new TextXifrat(resultat.toString().getBytes());
     }
@@ -76,39 +80,56 @@ public class XifradorPolialfabetic implements Xifrador{
         return -1; // Si no es troba, retorna -1 (no s'hauria de donar)
     }
 
-    @Override
-    public String desxifra( TextXifrat msgXifrat, String clau ) throws ClauNoSuportada{
-        if (clau == null){
-            throw new ClauNoSuportada("Clau no suportada");
+    public String desxifra(TextXifrat msgXifrat, String clau) throws ClauNoSuportada {
+        // Check if the key is null or invalid (not numeric)
+        if (clau == null || !clau.matches("[0-9]+")) {
+            throw new ClauNoSuportada("La clau per xifrat Polialfabètic ha de ser un String convertible a long");
         }
-
+    
+        // Convert the key to a long
+        long clauLong = Long.parseLong(clau);
+    
+        // Initialize the random generator with the key
         initRandom(clau);
+    
         StringBuilder resultat = new StringBuilder();
         byte[] bytes = msgXifrat.getBytes();
-        
-        for (byte b : bytes) {
-            char lletra = (char) b;
-            if (Character.isLowerCase(lletra)) {
-                alfabetP = permutaAlfabet();  // Permuta per a cada lletra
-                int index = findIndex(alfabetP, lletra);
-                if (index != -1) {
-                    resultat.append(alfabetP[index]);
-                } else {
-                    resultat.append(lletra);  // Manté el caràcter si no es troba a l'alfabet
+    
+        try {
+            String cadena = new String(bytes, "UTF-8");
+    
+            for (char lletra : cadena.toCharArray()) {
+                // Handle lowercase letters
+                if (Character.isLowerCase(lletra)) {
+                    alfabetP = permutaAlfabet();  // Permute the alphabet for each letter
+                    int index = findIndex(alfabetP, lletra);
+                    if (index != -1) {
+                        resultat.append(alfabetP[index]);  // Append the decrypted letter
+                    } else {
+                        resultat.append(lletra);  // Keep non-alphabetic characters unchanged
+                    }
                 }
-            } else if (Character.isUpperCase(lletra)) {
-                alfabetP = permutaAlfabet();  // Permuta per a cada lletra
-                int index = findIndex(alfabetP, lletra);
-                if (index != -1) {
-                    resultat.append(alfabetP[index]);
-                } else {
-                    resultat.append(lletra);  // Manté el caràcter si no es troba a l'alfabet
+                // Handle uppercase letters
+                else if (Character.isUpperCase(lletra)) {
+                    alfabetP = permutaAlfabet();  // Permute the alphabet for each letter
+                    int index = findIndex(alfabetP, lletra);
+                    if (index != -1) {
+                        resultat.append(alfabetP[index]);  // Append the decrypted letter
+                    } else {
+                        resultat.append(lletra);  // Keep non-alphabetic characters unchanged
+                    }
                 }
-                
-            } else {
-                resultat.append(lletra); // Manté els caràcters no alfabètics
+                // Handle non-alphabetic characters (preserve them as they are)
+                else {
+                    resultat.append(lletra);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    
+        // Return the decrypted message as a string
         return resultat.toString();
     }
+    
 }

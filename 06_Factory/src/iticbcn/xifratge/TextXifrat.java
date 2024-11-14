@@ -16,11 +16,12 @@ public class TextXifrat {
     // Mètode toString sobreescrit per retornar una representació del text xifrat
     @Override
     public String toString() {
-        //return Arrays.toString(textXifrat);
-        StringBuilder sb = new StringBuilder();
-        for (byte b : textXifrat){
-            sb.append((char)b);
+        try {
+            // Converteix els bytes a una cadena utilitzant UTF-8
+            return new String(textXifrat, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;  // O bé retornar una cadena buida
         }
-        return sb.toString();
     }
 }
