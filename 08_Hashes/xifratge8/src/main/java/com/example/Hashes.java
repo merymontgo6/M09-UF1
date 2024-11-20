@@ -12,8 +12,8 @@ import javax.crypto.spec.PBEKeySpec;
 //S'HA DE FER UN FOR PER CADA LLETRA DEL ARRAY CHAR PASSWORD
 //VA A PROVAR AMB A I DESPRES AMB LA CONTRSSENYA QUE ELL DONA
 public class Hashes {
-    private int npass = 0;
-
+    public int npass = 0;
+    
     public String getSHA512AmbSalt(String pw, String salt) {
         try {
             String saltedPassword = pw + salt; // Combina contrassenya amb salt
@@ -29,7 +29,7 @@ public class Hashes {
     public String getPBKDF2AmbSalt(String pw, String salt) {
         try {
             byte[] abSalt = salt.getBytes(StandardCharsets.UTF_8);
-            KeySpec spec = new PBEKeySpec(pw.toCharArray(), abSalt, 65536, 128);
+            KeySpec spec = new PBEKeySpec(pw.toCharArray(), abSalt, 65536, 128); //max vegades que es pot fer
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             byte[] abHash = factory.generateSecret(spec).getEncoded();
             HexFormat hex = HexFormat.of();
@@ -40,51 +40,42 @@ public class Hashes {
             return null; // Retorna null en cas d'error
         }
     }
-           
-    //for ()
-    //if((pw = testPw (0)) != null) return null;
-        //for ()
-        //if((pw = testPw ()) != null) return null; s'ha de comparar amb el hash i ha de sortir una vegada que el pass es correcte
-    public String forcaBruta(String alg, String hash, String salt) {
-        String CHARSET = "abcdefABCDEF1234567890!";
-        npass = 0;
-        
-        String currentPassword = new String(password);
-        // Generar el hash per a la contrasenya actual + salt
-        String generatedHash = generateHash(alg, currentPassword, salt);
-        char[] password = new char[6];
-        for (int i = 0; i < CHARSET.length(); i++) {
-            password[0] = CHARSET.charAt(i);
-            // Crear la contrasenya actual
-             currentPassword = new String(password);
-            // Generar el hash per a la contrasenya actual + salt
-             generatedHash = generateHash(alg, currentPassword, salt);
-            if (generatedHash != null && generatedHash.equals(hash)) {
-                return currentPassword; // Retornar la contrasenya trobada
-            }
-            for (int j = 0; j < CHARSET.length(); j++) {
-                password[1] = CHARSET.charAt(j);
-                currentPassword = new String(password);
-                // Generar el hash per a la contrasenya actual + salt
-                 generatedHash = generateHash(alg, currentPassword, salt);
-                if (generatedHash != null && generatedHash.equals(hash)) {
-                    return currentPassword; // Retornar la contrasenya trobada
-                }
-                for (int k = 0; k < CHARSET.length(); k++) {
-                    password[2] = CHARSET.charAt(k);
-                    for (int l = 0; l < CHARSET.length(); l++) {
-                        password[3] = CHARSET.charAt(l);
-                        for (int m = 0; m < CHARSET.length(); m++) {
-                            password[4] = CHARSET.charAt(m);
-                            for (int n = 0; n < CHARSET.length(); n++) {
-                                password[5] = CHARSET.charAt(n);
-                                npass++;// Incrementar el comptador de contrasenyes provades
 
-                                currentPassword = new String(password);
-                                // Generar el hash per a la contrasenya actual + salt
-                                generatedHash = generateHash(alg, currentPassword, salt);
-                                if (generatedHash != null && generatedHash.equals(hash)) {
-                                    return currentPassword; // Retornar la contrasenya trobada
+    public String forcaBruta(String alg, String hash, String salt) {
+        String charset = "abcdefABCDEF1234567890!";
+        char[] password = new char[6];
+        String foundPassword = null;
+    
+        // Bucle anidat per provar totes les combinacions
+        for (int i = 0; i < charset.length(); i++) {
+            for (int j = 0; j < charset.length(); j++) {
+                for (int k = 0; k < charset.length(); k++) {
+                    for (int l = 0; l < charset.length(); l++) {
+                        for (int m = 0; m < charset.length(); m++) {
+                            for (int n = 0; n < charset.length(); n++) { // per cada combinació de 6 caràcters MAX PQ PETA
+                                password[0] = charset.charAt(i); // s'afegeixen els caràcters a la contrasenya
+                                password[1] = charset.charAt(j);
+                                password[2] = charset.charAt(k);
+                                password[3] = charset.charAt(l);
+                                password[4] = charset.charAt(m);
+                                password[5] = charset.charAt(n);
+                                String trialPw = new String(password);
+                                npass++;
+                                    
+                                String trialHash = null;
+                                try {
+                                    if (alg.equals("SHA-512")) {
+                                        trialHash = getSHA512AmbSalt(trialPw, salt);
+                                    } else if (alg.equals("PBKDF2")) {
+                                        trialHash = getPBKDF2AmbSalt(trialPw, salt);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+    
+                                if (trialHash != null && trialHash.equals(hash)) {
+                                    foundPassword = trialPw;
+                                    return foundPassword;
                                 }
                             }
                         }
@@ -92,18 +83,7 @@ public class Hashes {
                 }
             }
         }
-        return null; // en cas de no trobada, retorna null
-    }
-
-    private String generateHash(String alg, String password, String salt) {
-        if (alg.equalsIgnoreCase("SHA-512")) {
-            return getSHA512AmbSalt(password, salt);
-        } else if (alg.equalsIgnoreCase("PBKDF2")) {
-            return getPBKDF2AmbSalt(password, salt);
-        } else {
-            System.out.println("Algorisme desconegut: " + alg);
-            return null;
-        }
+        return foundPassword;
     }
 
     public String getInterval(long t1, long t2) {
@@ -118,8 +98,5 @@ public class Hashes {
 
         // Retornar el resultat en format llegible
         return String.format("%d dies / %d hores / %d minuts / %d segons / %d mil·lisegons", dies, hores, minutes, segons, millis);
-    }
-    public Hashes(){
-        
     }
 }
