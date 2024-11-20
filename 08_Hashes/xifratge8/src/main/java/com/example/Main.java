@@ -1,10 +1,9 @@
 package com.example;
 
 public class Main {
-    private int npass = 0;
     public static void main(String[] args) throws Exception {
         String salt = "qpoweiruañslkdfjz";
-        String pw = "aaabF!";
+        String pw = "a";
         Hashes h = new Hashes();
         String[] aHashes = { h.getSHA512AmbSalt(pw, salt),
         h.getPBKDF2AmbSalt(pw, salt) };
@@ -22,7 +21,7 @@ public class Main {
         long t2 = System.currentTimeMillis();
         
         System.out.printf("Pass : %s\n", pwTrobat);
-        System.out.printf("Provats: %d\n", h.getNpass());
+        //System.out.printf("Provats: %d\n", h.npass);
         System.out.printf("Temps : %s\n", h.getInterval(t1, t2));
         System.out.printf("---------------------------\n\n");
         }
